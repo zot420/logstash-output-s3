@@ -149,7 +149,11 @@ class LogStash::Outputs::S3 < LogStash::Outputs::Base
     # find and use the bucket
     bucket = @s3.buckets[@bucket]
 
-    remote_filename = "#{@prefix}#{File.basename(file)}"
+    if @dyn_prefix
+      remote_filename = "#{event.sprintf(@prefix)}#{File.basename(file)}"
+    else
+      remote_filename = "#{@prefix}#{File.basename(file)}"
+    end
 
     @logger.debug("S3: ready to write file in bucket", :remote_filename => remote_filename, :bucket => @bucket)
 
